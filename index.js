@@ -1,6 +1,7 @@
 const express = require('express');
 const { port } = require('./config/index');
 const postsApi = require('./routes/posts');
+const authApi = require('./routes/auth');
 
 const app = express();
 
@@ -11,6 +12,7 @@ app.get('/', (req, res) => {
 });
 
 postsApi(app);
+authApi(app);
 
 app.listen(port, () => {
   console.log(`Server on Port ${port}`);
