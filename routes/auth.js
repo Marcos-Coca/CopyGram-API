@@ -11,7 +11,7 @@ function authApi(app) {
 
   const userService = new UsersService();
 
-  router.post('/sign-up', async function (req, res) {
+  router.post('/sign-up', async function (req, res, next) {
     const { body: user } = req;
 
     try {
@@ -26,10 +26,7 @@ function authApi(app) {
         message: 'user created',
       });
     } catch (err) {
-      res.status(400).json({
-        data: null,
-        message: err,
-      });
+      next(err);
     }
   });
 }

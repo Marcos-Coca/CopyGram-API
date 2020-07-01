@@ -3,6 +3,7 @@ const dotenv = require('dotenv');
 dotenv.config();
 
 module.exports = {
+  env: process.env.NODE_ENV !== 'production',
   port: process.env.PORT || 3000,
   db_user: process.env.DB_USER,
   db_password: process.env.DB_PASSWORD,
