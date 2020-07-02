@@ -7,6 +7,11 @@ class UsersService {
     this.collection = 'users';
   }
 
+  async findUser(id) {
+    const user = await this.DB.get(this.collection, id);
+    return user;
+  }
+
   async getUser({ email }) {
     const user = await this.DB.getAll(this.collection, {
       email,

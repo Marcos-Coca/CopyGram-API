@@ -10,4 +10,5 @@ module.exports = {
   db_name: process.env.DB_NAME,
   db_cluster: process.env.DB_CLUSTER,
   access_secret: process.env.ACCESS_JWT_SECRET,
+  silent_secret: process.env.SILENT_JWT_SECRET,
 };

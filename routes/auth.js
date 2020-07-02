@@ -27,9 +27,11 @@ function authApi(app) {
 
       const createdUserId = await userService.createUser(user);
 
-      const accessToken = createJwt(createdUserId, user.name);
+      const { refreshToken, accessToken } = createJwt(createdUserId, user.name);
 
-      res.status(201).json({ accessToken, id: createdUserId });
+      res.cookie('refresh-token', refreshToken, { httpOnly: true });
+      res.cookie('access-token', accessToken, { httpOnly: true });
+      res.status(201).json({ id: createdUserId });
     } catch (err) {
       next(err);
     }
