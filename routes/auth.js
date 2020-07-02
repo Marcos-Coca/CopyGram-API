@@ -1,9 +1,10 @@
 const express = require('express');
-const passport = require('passport');
 const bomm = require('@hapi/boom');
-const jwt = require('jsonwebtoken');
+const { userSchema } = require('../schemas/users');
 
 const UsersService = require('../services/user');
+const validationHandler = require('../middlewares/validationHandler');
+const { createJwt } = require('../utils/jwt');
 
 function authApi(app) {
   const router = express.Router();
@@ -11,20 +12,24 @@ function authApi(app) {
 
   const userService = new UsersService();
 
-  router.post('/sign-up', async function (req, res, next) {
+  router.post('/sign-up', validationHandler(userSchema), async function (
+    req,
+    res,
+    next
+  ) {
     const { body: user } = req;
 
     try {
-      if (await userService.getUser({ email: user.email })) {
+      const isUser = await userService.getUser({ email: user.email });
+      if (isUser.length) {
         throw bomm.unauthorized();
       }
 
       const createdUserId = await userService.createUser(user);
 
-      res.status(201).json({
-        data: createdUserId,
-        message: 'user created',
-      });
+      const accessToken = createJwt(createdUserId, user.name);
+
+      res.status(201).json({ accessToken, id: createdUserId });
     } catch (err) {
       next(err);
     }

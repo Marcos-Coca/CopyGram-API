@@ -7,7 +7,7 @@ class UsersService {
     this.collection = 'users';
   }
 
-  async getUser(email) {
+  async getUser({ email }) {
     const user = await this.DB.getAll(this.collection, {
       email,
     });
