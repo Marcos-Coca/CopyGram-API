@@ -6,12 +6,14 @@ const {
   postIdSchema,
   updatePostSchema,
 } = require('../schemas/posts');
+const FollowerService = require('../services/follower');
 
 function postsApi(app) {
   const router = express.Router();
   app.use('/api/posts', router);
 
   const postsService = new PostsService();
+  // const followerService = new FollowerService();
 
   router.post('/create', validationHandler(createPostSchema), async function (
     req,
