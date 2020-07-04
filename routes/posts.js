@@ -1,5 +1,11 @@
 const express = require('express');
 const PostsService = require('../services/posts');
+const validationHandler = require('../middlewares/validationHandler');
+const {
+  createPostSchema,
+  postIdSchema,
+  updatePostSchema,
+} = require('../schemas/posts');
 
 function postsApi(app) {
   const router = express.Router();
@@ -7,34 +13,79 @@ function postsApi(app) {
 
   const postsService = new PostsService();
 
-  router.post('/create', async function (req, res) {
-    const { data } = req.body;
+  router.post('/create', validationHandler(createPostSchema), async function (
+    req,
+    res,
+    next
+  ) {
+    const { body: post } = req;
 
     try {
-      const post = await postsService.createPost(data);
+      const createdPost = await postsService.createPost(post);
 
       res.status(200).json({
-        data: post,
+        data: createdPost,
         message: 'post created',
       });
     } catch (err) {
-      return new Error('Tu Mai');
+      next(err);
     }
   });
+  router.get(
+    '/:postId',
+    validationHandler({ postId: postIdSchema }),
+    async function (req, res, next) {
+      const { postId } = req.params;
+      try {
+        const post = await postsService.getPost(postId);
 
-  router.get('/:postId', async function (req, res) {
-    const { postId } = req.query;
-    try {
-      const post = await postsService.getPost(postId);
-
-      res.status(200).json({
-        data: post,
-        message: 'Post retrieved',
-      });
-    } catch (err) {
-      return new Error('Tu Mai');
+        res.status(200).json({
+          data: post,
+          message: 'Post retrieved',
+        });
+      } catch (err) {
+        next(err);
+      }
     }
-  });
+  );
+  router.put(
+    '/:postId',
+    validationHandler({ postId: postIdSchema }),
+    validationHandler(updatePostSchema),
+    async function (req, res, next) {
+      const { postId } = req.params;
+      const { body: post } = req;
+
+      try {
+        const updatedPost = await postsService.updatePost(postId, post);
+
+        res.status(200).json({
+          data: updatedPost,
+          message: 'post created',
+        });
+      } catch (err) {
+        next(err);
+      }
+    }
+  );
+  router.delete(
+    '/:postId',
+    validationHandler({ postId: postIdSchema }),
+    async function (req, res, next) {
+      const { postId } = req.params;
+
+      try {
+        const deletedPost = await postsService.deletePost(postId);
+
+        res.status(200).json({
+          data: deletedPost,
+          message: 'post created',
+        });
+      } catch (err) {
+        next(err);
+      }
+    }
+  );
 }
 
 module.exports = postsApi;
