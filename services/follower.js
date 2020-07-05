@@ -23,6 +23,7 @@ class FollowerService {
 
   async givePostToFollowers(userId, postId) {
     const user = await this.userService.findUser(userId);
+    user.followers.push(userId);
     user.followers.map(async (user) => {
       await this.DB.appendValue(this.collection, user, 'followingPots', postId);
     });

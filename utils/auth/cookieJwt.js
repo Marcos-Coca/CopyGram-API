@@ -13,6 +13,7 @@ passport.use(
     },
     async function ({ cookies }, accessToken, callback) {
       const { refreshToken } = cookies;
+
       if (!accessToken || !refreshToken) {
         return callback(unauthorized(), false, null);
       }
@@ -24,10 +25,7 @@ passport.use(
 
       try {
         const tokens = await refreshTokens(refreshToken);
-        console.log(tokens);
-        return callback(null, tokens.user, {
-          tokens: { accessToken, refreshToken },
-        });
+        return callback(null, tokens.user, { ...tokens });
       } catch (err) {
         return callback(err, false, null);
       }

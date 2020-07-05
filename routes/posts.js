@@ -1,5 +1,6 @@
 const express = require('express');
 const PostsService = require('../services/posts');
+const FollowerService = require('../services/follower');
 const validationHandler = require('../middlewares/validationHandler');
 const {
   createPostSchema,
@@ -9,8 +10,8 @@ const {
 const passport = require('passport');
 const { unauthorized } = require('@hapi/boom');
 const { sendCookies } = require('../utils/jwt');
-const { ObjectId } = require('mongodb');
 
+//Cookies Jwt Strategy
 require('../utils/auth/cookieJwt');
 
 function postsApi(app) {
@@ -18,6 +19,7 @@ function postsApi(app) {
   app.use('/api/posts', router);
 
   const postsService = new PostsService();
+  const followerService = new FollowerService();
 
   router.post('/create', validationHandler(createPostSchema), async function (
     req,

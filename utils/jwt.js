@@ -13,11 +13,8 @@ function createJwt({ _id, name }) {
   });
 
   const accessToken = jwt.sign(payload, access_secret, {
-    expiresIn: '1s',
+    expiresIn: '15m',
   });
-
-  console.log(`refreshToken: ${refreshToken}`);
-  console.log(`accessToken: ${accessToken}`);
 
   return { refreshToken, accessToken };
 }
@@ -25,6 +22,7 @@ function createJwt({ _id, name }) {
 async function refreshTokens(token) {
   try {
     const data = jwt.verify(token, refresh_secret);
+    console.log(data);
     const userService = new UsersService();
     const user = await userService.findUser(data._id);
     if (!user) {

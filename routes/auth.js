@@ -48,7 +48,10 @@ function authApi(app) {
 
       const createdUserId = await userService.createUser(user);
 
-      const { refreshToken, accessToken } = createJwt(createdUserId, user.name);
+      const { refreshToken, accessToken } = createJwt({
+        ...user,
+        _id: createdUserId,
+      });
 
       sendCookies(res, { refreshToken, accessToken });
 

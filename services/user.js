@@ -28,7 +28,6 @@ class UsersService {
       password: hashedPassword,
     });
 
-    console.log(async () => await this.DB.getAll(this.collection));
     return createdUserId;
   }
 }
