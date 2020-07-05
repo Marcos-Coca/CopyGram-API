@@ -1,7 +1,6 @@
 const express = require('express');
 const { port } = require('./config/index');
-const postsApi = require('./routes/posts');
-const authApi = require('./routes/auth');
+
 const {
   logErrors,
   wrapErrors,
@@ -15,14 +14,16 @@ const app = express();
 app.use(express.json());
 app.use(cookieParser());
 
-app.all('/api/posts', cookieAuth);
-
 app.get('/', (req, res) => {
   res.send('Hola Crack');
 });
 
+//routes
+
 app.use('/api/posts', cookieAuth, require('./routes/posts'));
 app.use('/api/auth', require('./routes/auth'));
+app.use('/api/follow', cookieAuth, require('./routes/follow'));
+
 //Error middlewares
 app.use(logErrors);
 app.use(wrapErrors);
