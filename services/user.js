@@ -3,8 +3,8 @@ const { encryptPassword } = require('../utils/password');
 
 class UsersService {
   constructor() {
-    this.DB = new MongoLib();
     this.collection = 'users';
+    this.DB = new MongoLib();
   }
 
   async findUser(id) {
@@ -29,6 +29,10 @@ class UsersService {
     });
 
     return createdUserId;
+  }
+
+  async createPost(userId, postId) {
+    await this.DB.appendValue(this.collection, userId, 'posts', postId);
   }
 }
 

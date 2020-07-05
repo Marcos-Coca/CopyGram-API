@@ -1,6 +1,5 @@
 const MongoLib = require('../lib/mongo');
 const UserService = require('./user');
-const PostsService = require('./posts');
 const { ObjectId } = require('mongodb');
 
 class FollowerService {
@@ -9,7 +8,6 @@ class FollowerService {
     this.collection = 'users';
     this.field = 'followwing';
     this.userService = new UserService();
-    this.postService = new PostsService();
   }
 
   async followAUser(userId, userToFollowId) {
@@ -31,7 +29,7 @@ class FollowerService {
 
   async getFollowingPosts(userId = '') {
     const user = await this.userService.findUser(userId);
-    const posts = await this.DB.getAll(this.postService.collection, {
+    const posts = await this.DB.getAll('posts', {
       _id: ObjectId(...user.followingPots),
     });
 

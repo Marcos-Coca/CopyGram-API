@@ -1,9 +1,13 @@
 const MongoLib = require('../lib/mongo');
 const { unauthorized } = require('@hapi/boom');
+const UsersService = require('./user');
+const FollowerService = require('./follower');
 
-class PostsService {
+class PostService {
   constructor() {
     this.collection = 'posts';
+    this.userService = new UsersService();
+    this.followerService = new FollowerService();
     this.DB = new MongoLib();
   }
 
@@ -13,8 +17,10 @@ class PostsService {
   }
 
   async createPost(data) {
-    const createdPost = await this.DB.create(this.collection, data);
-    return createdPost;
+    const createdPostId = await this.DB.create(this.collection, data);
+    await this.followerService.givePostToFollowers(data.user, createdPostId);
+    await this.userService.createPost(data.user, createdPostId);
+    return createdPostId;
   }
 
   async updatePost(id, data, user) {
@@ -35,4 +41,4 @@ class PostsService {
   }
 }
 
-module.exports = PostsService;
+module.exports = PostService;

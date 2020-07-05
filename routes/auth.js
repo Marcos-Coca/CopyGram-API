@@ -11,7 +11,7 @@ require('../utils/auth/basic');
 
 function authApi(app) {
   const router = express.Router();
-  app.use('/api/auth', router);
+  app.use('/auth', router);
 
   const userService = new UsersService();
 

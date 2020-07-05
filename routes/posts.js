@@ -1,89 +1,53 @@
 const express = require('express');
+
 const PostsService = require('../services/posts');
-const FollowerService = require('../services/follower');
 const validationHandler = require('../middlewares/validationHandler');
 const {
   createPostSchema,
   postIdSchema,
   updatePostSchema,
 } = require('../schemas/posts');
-const passport = require('passport');
-const { unauthorized } = require('@hapi/boom');
-const { sendCookies } = require('../utils/jwt');
-
-//Cookies Jwt Strategy
-require('../utils/auth/cookieJwt');
 
 function postsApi(app) {
   const router = express.Router();
   app.use('/api/posts', router);
 
   const postsService = new PostsService();
-  const followerService = new FollowerService();
 
   router.post('/create', validationHandler(createPostSchema), async function (
     req,
     res,
     next
   ) {
-    passport.authenticate('cookie', { session: false }, async function (
-      err,
-      user,
-      tokens
-    ) {
-      try {
-        if (err || !user) {
-          return next(unauthorized());
-        }
-        const { body: post } = req;
-        const createdPost = await postsService.createPost({
-          ...post,
-          user: user._id,
-        });
+    try {
+      const { body: post, user } = req;
 
-        if (tokens) {
-          sendCookies(res, tokens);
-        }
+      await postsService.createPost({ ...post, user });
 
-        res.status(201).json({
-          data: createdPost,
-          message: 'post created',
-        });
-      } catch (err) {
-        next(err);
-      }
-    })(req, res, next);
+      res.status(201).json({
+        message: 'post created',
+      });
+    } catch (err) {
+      next(err);
+    }
   });
 
   router.get(
     '/:postId',
     validationHandler({ postId: postIdSchema }),
     async function (req, res, next) {
-      passport.authenticate('cookie', { session: false }, async function (
-        err,
-        user,
-        tokens
-      ) {
-        try {
-          if (err || !user) {
-            next(unauthorized());
-          }
-          const { postId } = req.params;
+      try {
+        const { postId } = req.params;
 
-          const post = await postsService.getPost(postId);
+        const post = await postsService.getPost(postId);
 
-          if (tokens) {
-            sendCookies(res, tokens);
-          }
-
-          res.status(200).json({
-            data: post,
-            message: 'Post retrieved',
-          });
-        } catch (err) {
-          next(err);
-        }
-      })(req, res, next);
+        res.status(200).json({
+          data: post,
+          message: 'Post retrieved',
+        });
+      } catch (err) {
+        next(err);
+      }
     }
   );
 
@@ -92,35 +56,21 @@ function postsApi(app) {
     validationHandler({ postId: postIdSchema }),
     validationHandler(updatePostSchema),
     async function (req, res, next) {
-      passport.authenticate('cookie', { session: false }, async function (
-        err,
-        user,
-        tokens
-      ) {
-        try {
-          if (err || !user) {
-            next(unauthorized());
-          }
-          const { postId } = req.params;
-          const { body: post } = req;
-          const updatedPost = await postsService.updatePost(
-            postId,
-            post,
-            user._id
-          );
+      try {
+        const {
+          body: post,
+          user,
+          params: { postId },
+        } = req;
+        const updatedPost = await postsService.updatePost(postId, post, user);
 
-          if (tokens) {
-            sendCookies(res, tokens);
-          }
-
-          res.status(200).json({
-            data: updatedPost,
-            message: 'post created',
-          });
-        } catch (err) {
-          next(err);
-        }
-      })(req, res, next);
+        res.status(200).json({
+          data: updatedPost,
+          message: 'post created',
+        });
+      } catch (err) {
+        next(err);
+      }
     }
   );
 
@@ -128,31 +78,21 @@ function postsApi(app) {
     '/:postId',
     validationHandler({ postId: postIdSchema }),
     async function (req, res, next) {
-      passport.authenticate('cookie', { session: false }, async function (
-        err,
-        user,
-        tokens
-      ) {
-        try {
-          if (err || !user) {
-            next(unauthorized());
-          }
-          const { postId } = req.params;
+      try {
+        const {
+          params: { postId },
+          user,
+        } = req;
 
-          const deletedPost = await postsService.deletePost(postId, user._id);
+        const deletedPost = await postsService.deletePost(postId, user);
 
-          if (tokens) {
-            sendCookies(res, tokens);
-          }
-
-          res.status(200).json({
-            data: deletedPost,
-            message: 'post created',
-          });
-        } catch (err) {
-          next(err);
-        }
-      })(req, res, next);
+        res.status(200).json({
+          data: deletedPost,
+          message: 'post created',
+        });
+      } catch (err) {
+        next(err);
+      }
     }
   );
 }
