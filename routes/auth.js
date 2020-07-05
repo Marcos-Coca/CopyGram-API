@@ -22,7 +22,7 @@ function authApi(app) {
           next(bomm.unauthorized());
         }
 
-        const { refreshToken, accessToken } = createJwt(user._id, user.name);
+        const { refreshToken, accessToken } = createJwt(user);
 
         sendCookies(res, { refreshToken, accessToken });
 

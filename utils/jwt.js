@@ -16,16 +16,17 @@ function createJwt({ _id, name }) {
     expiresIn: '1s',
   });
 
+  console.log(`refreshToken: ${refreshToken}`);
+  console.log(`accessToken: ${accessToken}`);
+
   return { refreshToken, accessToken };
 }
 
 async function refreshTokens(token) {
   try {
     const data = jwt.verify(token, refresh_secret);
-    console.log(data, token);
     const userService = new UsersService();
     const user = await userService.findUser(data._id);
-    console.log(user);
     if (!user) {
       throw new Error('Invalid Token');
     }
