@@ -1,40 +1,54 @@
 const jwt = require('jsonwebtoken');
-const { access_secret, silent_secret } = require('../config/index');
+const { access_secret, refresh_secret, env } = require('../config/index');
 const UsersService = require('../services/user');
 
-function createJwt(_id, name) {
+function createJwt({ _id, name }) {
   const payload = {
-    sub: _id,
+    _id,
     name,
   };
 
-  const refreshToken = jwt.sign({ id: _id }, silent_secret, {
+  const refreshToken = jwt.sign({ _id }, refresh_secret, {
     expiresIn: '7d',
   });
 
   const accessToken = jwt.sign(payload, access_secret, {
-    expiresIn: '15m',
+    expiresIn: '1s',
   });
 
   return { refreshToken, accessToken };
 }
 
-async function refreshToken(token) {
+async function refreshTokens(token) {
   try {
-    const data = jwt.verify(token, silent_secret);
+    const data = jwt.verify(token, refresh_secret);
+    console.log(data, token);
     const userService = new UsersService();
-    const user = await userService.findUser(data.id);
+    const user = await userService.findUser(data._id);
+    console.log(user);
     if (!user) {
       throw new Error('Invalid Token');
     }
-    const { accessToken, refreshToken } = createJwt(user._id, user.name);
-    return { accessToken, refreshToken };
+    const { accessToken, refreshToken } = createJwt(user);
+    return { accessToken, refreshToken, user };
   } catch (err) {
-    return null;
+    return err;
   }
+}
+
+function sendCookies(res, { refreshToken, accessToken }) {
+  res.cookie('refreshToken', refreshToken, {
+    httpOnly: !env,
+    secure: !env,
+  });
+  res.cookie('accessToken', accessToken, {
+    httpOnly: !env,
+    secure: !env,
+  });
 }
 
 module.exports = {
   createJwt,
-  refreshToken,
+  refreshTokens,
+  sendCookies,
 };

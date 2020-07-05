@@ -4,7 +4,7 @@ const { userSchema } = require('../schemas/users');
 
 const UsersService = require('../services/user');
 const validationHandler = require('../middlewares/validationHandler');
-const { createJwt } = require('../utils/jwt');
+const { createJwt, sendCookies } = require('../utils/jwt');
 const passport = require('passport');
 
 require('../utils/auth/basic');
@@ -24,8 +24,8 @@ function authApi(app) {
 
         const { refreshToken, accessToken } = createJwt(user._id, user.name);
 
-        res.cookie('refresh-token', refreshToken, { httpOnly: true });
-        res.cookie('access-token', accessToken, { httpOnly: true });
+        sendCookies(res, { refreshToken, accessToken });
+
         return res.status(201).json({ id: user._id });
       } catch (err) {
         next(err);
@@ -50,8 +50,8 @@ function authApi(app) {
 
       const { refreshToken, accessToken } = createJwt(createdUserId, user.name);
 
-      res.cookie('refresh-token', refreshToken, { httpOnly: true });
-      res.cookie('access-token', accessToken, { httpOnly: true });
+      sendCookies(res, { refreshToken, accessToken });
+
       return res.status(201).json({ id: createdUserId });
     } catch (err) {
       next(err);
