@@ -22,7 +22,6 @@ function createJwt({ _id, name }) {
 async function refreshTokens(token) {
   try {
     const data = jwt.verify(token, refresh_secret);
-    console.log(data);
     const userService = new UsersService();
     const user = await userService.findUser(data._id);
     if (!user) {

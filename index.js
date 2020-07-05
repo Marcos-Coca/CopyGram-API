@@ -15,15 +15,14 @@ const app = express();
 app.use(express.json());
 app.use(cookieParser());
 
-app.all('/api/*', cookieAuth);
+app.all('/api/posts', cookieAuth);
 
 app.get('/', (req, res) => {
   res.send('Hola Crack');
 });
 
-postsApi(app);
-authApi(app);
-
+app.use('/api/posts', cookieAuth, require('./routes/posts'));
+app.use('/api/auth', require('./routes/auth'));
 //Error middlewares
 app.use(logErrors);
 app.use(wrapErrors);

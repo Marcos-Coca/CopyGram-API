@@ -1,65 +1,12 @@
 const express = require('express');
-const bomm = require('@hapi/boom');
 const { userSchema } = require('../schemas/users');
-
-const UsersService = require('../services/user');
 const validationHandler = require('../middlewares/validationHandler');
-const { createJwt, sendCookies } = require('../utils/jwt');
-const passport = require('passport');
+const { signUp, signIn } = require('./routersController/authController');
 
-require('../utils/auth/basic');
+const router = express.Router();
 
-function authApi(app) {
-  const router = express.Router();
-  app.use('/auth', router);
+router.post('/sign-in', signIn);
 
-  const userService = new UsersService();
+router.post('/sign-up', validationHandler(userSchema), signUp);
 
-  router.post('/sign-in', async function (req, res, next) {
-    passport.authenticate('basic', function (err, user) {
-      try {
-        if (err || !user) {
-          next(bomm.unauthorized());
-        }
-
-        const { refreshToken, accessToken } = createJwt(user);
-
-        sendCookies(res, { refreshToken, accessToken });
-
-        return res.status(201).json({ id: user._id });
-      } catch (err) {
-        next(err);
-      }
-    })(req, res, next);
-  });
-
-  router.post('/sign-up', validationHandler(userSchema), async function (
-    req,
-    res,
-    next
-  ) {
-    const { body: user } = req;
-
-    try {
-      const [isUser] = await userService.getUser({ email: user.email });
-      if (isUser) {
-        throw bomm.unauthorized();
-      }
-
-      const createdUserId = await userService.createUser(user);
-
-      const { refreshToken, accessToken } = createJwt({
-        ...user,
-        _id: createdUserId,
-      });
-
-      sendCookies(res, { refreshToken, accessToken });
-
-      return res.status(201).json({ id: createdUserId });
-    } catch (err) {
-      next(err);
-    }
-  });
-}
-
-module.exports = authApi;
+module.exports = router;

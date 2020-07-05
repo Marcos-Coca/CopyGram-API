@@ -1,100 +1,36 @@
 const express = require('express');
-
-const PostsService = require('../services/posts');
 const validationHandler = require('../middlewares/validationHandler');
+
 const {
   createPostSchema,
   postIdSchema,
   updatePostSchema,
 } = require('../schemas/posts');
 
-function postsApi(app) {
-  const router = express.Router();
-  app.use('/api/posts', router);
+const {
+  createPost,
+  getPost,
+  updatePost,
+  deletePost,
+} = require('./routersController/postsController');
 
-  const postsService = new PostsService();
+const router = express.Router();
 
-  router.post('/create', validationHandler(createPostSchema), async function (
-    req,
-    res,
-    next
-  ) {
-    try {
-      const { body: post, user } = req;
+router.post('/create', validationHandler(createPostSchema), createPost);
 
-      await postsService.createPost({ ...post, user });
+router.get('/:postId', validationHandler({ postId: postIdSchema }), getPost);
 
-      res.status(201).json({
-        message: 'post created',
-      });
-    } catch (err) {
-      next(err);
-    }
-  });
+router.put(
+  '/:postId',
+  validationHandler({ postId: postIdSchema }),
+  validationHandler(updatePostSchema),
+  updatePost
+);
 
-  router.get(
-    '/:postId',
-    validationHandler({ postId: postIdSchema }),
-    async function (req, res, next) {
-      try {
-        const { postId } = req.params;
+router.delete(
+  '/:postId',
+  validationHandler({ postId: postIdSchema }),
+  deletePost
+);
 
-        const post = await postsService.getPost(postId);
-
-        res.status(200).json({
-          data: post,
-          message: 'Post retrieved',
-        });
-      } catch (err) {
-        next(err);
-      }
-    }
-  );
-
-  router.put(
-    '/:postId',
-    validationHandler({ postId: postIdSchema }),
-    validationHandler(updatePostSchema),
-    async function (req, res, next) {
-      try {
-        const {
-          body: post,
-          user,
-          params: { postId },
-        } = req;
-        const updatedPost = await postsService.updatePost(postId, post, user);
-
-        res.status(200).json({
-          data: updatedPost,
-          message: 'post created',
-        });
-      } catch (err) {
-        next(err);
-      }
-    }
-  );
-
-  router.delete(
-    '/:postId',
-    validationHandler({ postId: postIdSchema }),
-    async function (req, res, next) {
-      try {
-        const {
-          params: { postId },
-          user,
-        } = req;
-
-        const deletedPost = await postsService.deletePost(postId, user);
-
-        res.status(200).json({
-          data: deletedPost,
-          message: 'post created',
-        });
-      } catch (err) {
-        next(err);
-      }
-    }
-  );
-}
-
-module.exports = postsApi;
+module.exports = router;
