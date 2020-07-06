@@ -1,12 +1,15 @@
-const PostService = require('../../services/posts');
+const PostService = require('../services/posts');
+const FollowerService = require('../services/follower');
 
 const postService = new PostService();
 
 async function createPost(req, res, next) {
+  const followerService = new FollowerService();
   try {
     const { body: post, user } = req;
 
-    await postService.createPost({ ...post, user });
+    const createdPostId = await postService.createPost({ ...post, user });
+    await followerService.givePostToFollowers(user, createdPostId);
 
     res.status(201).json({
       message: 'post created',
@@ -38,7 +41,7 @@ async function updatePost(req, res, next) {
       user,
       params: { postId },
     } = req;
-    const updatedPost = await postService.updatePost(postId, post, user);
+    const updatedPost = await postService.updatePost(postId, post);
 
     res.status(200).json({
       data: updatedPost,
@@ -56,7 +59,7 @@ async function deletePost(req, res, next) {
       user,
     } = req;
 
-    const deletedPost = await postService.deletePost(postId, user);
+    const deletedPost = await postService.deletePost(postId);
 
     res.status(200).json({
       data: deletedPost,

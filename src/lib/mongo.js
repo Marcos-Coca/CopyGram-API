@@ -36,7 +36,7 @@ class MongoLib {
 
   async get(collection, id) {
     const db = await this.connect();
-    return db.collection(collection).findOne({ _id: ObjectId(id) });
+    return db.collection(collection).findOne({ _id: new ObjectId(id) });
   }
 
   async getAll(collection, query = {}) {
@@ -54,32 +54,31 @@ class MongoLib {
     const db = await this.connect();
     const result = await db
       .collection(collection)
-      .updateOne({ _id: ObjectId(id) }, { $set: data });
+      .updateOne({ _id: new ObjectId(id) }, { $set: data });
 
     return result.upsertedId || id;
   }
 
   async appendValue(collection, id, field, value) {
     const db = await this.connect();
-    const object = await db.collection(collection).findOne({ _id: id });
-    console.log(object);
-    // if (object[field]) {
-    //   console.log(object[field]);
-    //   console.log(value);
-    //   if (object[field].includes(value)) {
-    //     return value;
-    //   }
-    // }
     const result = await db
       .collection(collection)
-      .updateOne({ _id: ObjectId(id) }, { $push: { [field]: value } });
+      .updateOne({ _id: new ObjectId(id) }, { $push: { [field]: value } });
+
+    return result;
+  }
+  async deleteValue(collection, id, field, value) {
+    const db = await this.connect();
+    const result = await db
+      .collection(collection)
+      .updateOne({ _id: new ObjectId(id) }, { $pull: { [field]: value } });
 
     return result;
   }
 
   async delete(collection, id) {
     const db = await this.connect();
-    await db.collection(collection).deleteOne({ _id: ObjectId(id) });
+    await db.collection(collection).deleteOne({ _id: new ObjectId(id) });
     return id;
   }
 }

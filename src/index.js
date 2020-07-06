@@ -19,7 +19,6 @@ app.get('/', (req, res) => {
 });
 
 //routes
-
 app.use('/api/posts', cookieAuth, require('./routes/posts'));
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/follow', cookieAuth, require('./routes/follow'));

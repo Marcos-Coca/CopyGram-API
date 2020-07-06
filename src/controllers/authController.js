@@ -1,11 +1,11 @@
-const UsersService = require('../../services/user');
+const UsersService = require('../services/user');
 const passport = require('passport');
 const { unauthorized } = require('@hapi/boom');
-const { createJwt, sendCookies } = require('../../utils/jwt');
+const { createJwt, sendCookies } = require('../utils/jwt');
 
 const userService = new UsersService();
 
-require('../../utils/auth/basic');
+require('../utils/auth/basic');
 
 async function signUp(req, res, next) {
   const { body: user } = req;

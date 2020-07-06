@@ -2,7 +2,7 @@
   "name": "copygram",
   "version": "1.0.0",
   "description": "A Simple Copy of Instagram",
-  "main": "index.js",
+  "main": "src/index.js",
   "scripts": {
     "dev": "nodemon"
   },

@@ -8,8 +8,13 @@ const { userIdSchema } = require('../schemas/users');
 
 const router = express.Router();
 
-router.post('/:userId', async function (req, res, next) {
-  await followerService.followAUser(req.user, req.params.userId);
+router.post('/:userId/follow', async function (req, res, next) {
+  await followerService.followUser(req.user, req.params.userId);
+
+  res.send('Vale');
+});
+router.post('/:userId/unfollow', async function (req, res, next) {
+  await followerService.unFollowUser(req.user, req.params.userId);
 
   res.send('Vale');
 });
