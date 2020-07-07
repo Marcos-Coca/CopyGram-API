@@ -2,7 +2,7 @@ const MongoLib = require('../lib/mongo');
 const UserService = require('./user');
 const { ObjectId } = require('mongodb');
 
-class FollowerService {
+class FriendShipService {
   constructor() {
     this.DB = new MongoLib();
     this.collection = 'users';
@@ -64,4 +64,4 @@ class FollowerService {
   }
 }
 
-module.exports = FollowerService;
+module.exports = FriendShipService;

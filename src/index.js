@@ -8,6 +8,8 @@ const {
 } = require('./middlewares/errorHandler');
 const cookieParser = require('cookie-parser');
 const cookieAuth = require('./middlewares/cookieAuth');
+const validationHandler = require('./middlewares/validationHandler');
+const { userIdSchema } = require('./schemas/users');
 
 const app = express();
 
@@ -21,7 +23,12 @@ app.get('/', (req, res) => {
 //routes
 app.use('/api/posts', cookieAuth, require('./routes/posts'));
 app.use('/api/auth', require('./routes/auth'));
-app.use('/api/follow', cookieAuth, require('./routes/follow'));
+app.use(
+  '/api/friendship',
+  validationHandler({ userId: userIdSchema }),
+  cookieAuth,
+  require('./routes/friendShip')
+);
 
 //Error middlewares
 app.use(logErrors);
