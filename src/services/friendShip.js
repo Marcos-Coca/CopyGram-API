@@ -11,56 +11,46 @@ class FriendShipService {
   }
 
   async getFollowers(userId) {
-    const user = await this.DB.get(this.collection, userId);
-    return user[this.field] || [];
+    const follower = await this.DB.getAll(
+      this.collection,
+      { _id: new ObjectId(userId) },
+      { followers: 1 }
+    );
+    return follower || [];
   }
 
-  async _checkIfFollowing(followerId, followingId) {
-    const following = await this.DB.getAll(this.collection, {
-      _id: new ObjectId(followingId),
-      followers: new ObjectId(followerId),
-    });
-    return !!following.length;
+  async getFollowing(userId) {
+    const following = await this.DB.getAll(
+      this.collection,
+      { _id: new ObjectId(userId) },
+      { following: 1 }
+    );
+    return following || [];
   }
 
   async followUser(followerId, followingId) {
-    const isFollowing = await this._checkIfFollowing(followerId, followingId);
-    if (!isFollowing) {
-      await this.DB.appendValue(
-        this.collection,
-        followingId,
-        this.field,
-        new ObjectId(followerId)
-      );
-    }
-  }
-  async unFollowUser(followerId, followingId) {
-    const isFollowing = await this._checkIfFollowing(followerId, followingId);
-    if (isFollowing) {
-      await this.DB.deleteValue(
-        this.collection,
-        followingId,
-        this.field,
-        new ObjectId(followerId)
-      );
-    }
-  }
-
-  async givePostToFollowers(userId, postId) {
-    const followers = await this.getFollowers(userId);
-    followers.map(async (user) => {
-      await this.DB.appendValue(
-        this.collection,
-        user,
-        'followingPosts',
-        postId
-      );
+    await this.DB.updateDocument(this.collection, followingId, {
+      $addToSet: { followers: new ObjectId(followerId) },
+    });
+    await this.DB.updateDocument(this.collection, followerId, {
+      $addToSet: { following: new ObjectId(followerId) },
     });
   }
+  async unFollowUser(followerId, followingId) {
+    await this.DB.deleteValue(
+      this.collection,
+      followingId,
+      this.field,
+      new ObjectId(followerId)
+    );
+  }
 
-  async getFollowingPosts(userId = '') {
-    const user = await this.userService.findUser(userId);
-    return user.followingPosts || [];
+  async getFollowingPosts(userId) {
+    const following = await this.getFollowing(userId);
+    const posts = await this.DB.getAll('posts', {
+      _id: { $in: following },
+    });
+    return posts;
   }
 }
 

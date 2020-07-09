@@ -39,9 +39,9 @@ class MongoLib {
     return db.collection(collection).findOne({ _id: new ObjectId(id) });
   }
 
-  async getAll(collection, query = {}) {
+  async getAll(collection, query = {}, data = {}) {
     const db = await this.connect();
-    return db.collection(collection).find(query).toArray();
+    return db.collection(collection).find(query, data).toArray();
   }
 
   async create(collection, data) {
@@ -59,11 +59,11 @@ class MongoLib {
     return result.upsertedId || id;
   }
 
-  async appendValue(collection, id, field, value) {
+  async updateDocument(collection, id, action) {
     const db = await this.connect();
     const result = await db
       .collection(collection)
-      .updateOne({ _id: new ObjectId(id) }, { $push: { [field]: value } });
+      .updateOne({ _id: new ObjectId(id) }, { action });
 
     return result;
   }

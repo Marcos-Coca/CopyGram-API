@@ -1,17 +1,15 @@
 const PostService = require('../services/posts');
-const FriendShipService = require('../services/friendShip');
 
 const postService = new PostService();
 
 async function createPost(req, res, next) {
-  const friendShipService = new FriendShipService();
   try {
     const { body: post, user } = req;
 
     const createdPostId = await postService.createPost({ ...post, user });
-    await friendShipService.givePostToFollowers(user, createdPostId);
 
     res.status(201).json({
+      data: createdPostId,
       message: 'post created',
     });
   } catch (err) {
