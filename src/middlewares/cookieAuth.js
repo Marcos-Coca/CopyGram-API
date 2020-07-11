@@ -2,6 +2,7 @@ const passport = require('passport');
 const { unauthorized } = require('@hapi/boom');
 
 const { sendCookies } = require('../utils/jwt');
+const { ObjectId } = require('mongodb');
 
 require('../utils/auth/cookieJwt');
 
@@ -19,7 +20,7 @@ function cookieAuth(req, res, next) {
         sendCookies(res, tokens);
       }
 
-      req.user = user._id;
+      req.user = new ObjectId(user._id);
 
       return next();
     } catch (err) {

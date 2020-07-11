@@ -2,10 +2,10 @@ const jwt = require('jsonwebtoken');
 const { access_secret, refresh_secret, env } = require('../config/index');
 const UsersService = require('../services/user');
 
-function createJwt({ _id, name }) {
+function createJwt({ _id, userName }) {
   const payload = {
     _id,
-    name,
+    userName,
   };
 
   const refreshToken = jwt.sign({ _id }, refresh_secret, {
@@ -13,7 +13,7 @@ function createJwt({ _id, name }) {
   });
 
   const accessToken = jwt.sign(payload, access_secret, {
-    expiresIn: '15m',
+    expiresIn: '1m',
   });
 
   return { refreshToken, accessToken };

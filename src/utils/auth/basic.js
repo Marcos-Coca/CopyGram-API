@@ -6,11 +6,11 @@ const UsersService = require('../../services/user');
 const { comparePaswword } = require('../password');
 
 passport.use(
-  new BasicStrategy(async function (email, password, callback) {
+  new BasicStrategy(async function (userName, password, callback) {
     const userService = new UsersService();
 
     try {
-      const [user] = await userService.getUser({ email });
+      const [user] = await userService.getUser({ userName });
 
       if (!user) return callback(unauthorized(), false);
 

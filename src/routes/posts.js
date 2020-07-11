@@ -18,18 +18,22 @@ const router = express.Router();
 
 router.post('/create', validationHandler(createPostSchema), createPost);
 
-router.get('/:postId', validationHandler({ postId: postIdSchema }), getPost);
+router.get(
+  '/:postId',
+  validationHandler({ postId: postIdSchema }, 'params'),
+  getPost
+);
 
 router.put(
   '/:postId',
-  validationHandler({ postId: postIdSchema }),
+  validationHandler({ postId: postIdSchema }, 'params'),
   validationHandler(updatePostSchema),
   updatePost
 );
 
 router.delete(
   '/:postId',
-  validationHandler({ postId: postIdSchema }),
+  validationHandler({ postId: postIdSchema }, 'params'),
   deletePost
 );
 

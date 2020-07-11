@@ -34,20 +34,21 @@ class MongoLib {
     return MongoLib.connection;
   }
 
-  async get(collection, id) {
+  async get(collection, id, projection = {}) {
     const db = await this.connect();
-    return db.collection(collection).findOne({ _id: new ObjectId(id) });
+    return db
+      .collection(collection)
+      .findOne({ _id: new ObjectId(id) }, { projection: { ...projection } });
   }
 
-  async getAll(collection, query = {}, data = {}) {
+  async getAll(collection, query = {}, required = {}) {
     const db = await this.connect();
-    return db.collection(collection).find(query, data).toArray();
+    return db.collection(collection).find(query).project(required).toArray();
   }
 
   async create(collection, data) {
     const db = await this.connect();
-    const result = await db.collection(collection).insertOne(data);
-    return result.insertedId;
+    return db.collection(collection).insertOne(data).insertedId;
   }
 
   async update(collection, id, data) {
@@ -61,19 +62,14 @@ class MongoLib {
 
   async updateDocument(collection, id, action) {
     const db = await this.connect();
-    const result = await db
+    return db
       .collection(collection)
-      .updateOne({ _id: new ObjectId(id) }, { action });
-
-    return result;
+      .updateOne({ _id: new ObjectId(id) }, action);
   }
-  async deleteValue(collection, id, field, value) {
-    const db = await this.connect();
-    const result = await db
-      .collection(collection)
-      .updateOne({ _id: new ObjectId(id) }, { $pull: { [field]: value } });
 
-    return result;
+  async agregation(collection, config) {
+    const db = await this.connect();
+    return await db.collection(collection).aggregate(config).toArray();
   }
 
   async delete(collection, id) {

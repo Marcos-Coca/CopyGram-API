@@ -23,12 +23,7 @@ app.get('/', (req, res) => {
 //routes
 app.use('/api/posts', cookieAuth, require('./routes/posts'));
 app.use('/api/auth', require('./routes/auth'));
-app.use(
-  '/api/friendship',
-  validationHandler({ userId: userIdSchema }),
-  cookieAuth,
-  require('./routes/friendShip')
-);
+app.use('/api/friendship', cookieAuth, require('./routes/friendShip'));
 
 //Error middlewares
 app.use(logErrors);

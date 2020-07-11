@@ -8,7 +8,6 @@ function validate(data, schema) {
 function validationHandler(schema, check = 'body') {
   return function (req, res, next) {
     const error = validate(req[check], schema);
-
     error ? next(boom.badImplementation(error)) : next();
   };
 }

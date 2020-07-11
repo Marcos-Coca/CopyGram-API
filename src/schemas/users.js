@@ -1,10 +1,11 @@
 const joi = require('@hapi/joi');
 
-const userIdSchema = joi.string().regex(/^[0-9a-fA-F]{24}$/);
+const userIdSchema = joi.object({
+  userId: joi.string().regex(/^[0-9a-fA-F]{24}$/),
+});
 
 const userSchema = joi.object({
-  name: joi.string().max(100).required(),
-  email: joi.string().email().required(),
+  userName: joi.string().max(100).required(),
   password: joi.string().required(),
 });
 

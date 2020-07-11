@@ -11,11 +11,6 @@ async function signUp(req, res, next) {
   const { body: user } = req;
 
   try {
-    const [isUser] = await userService.getUser({ email: user.email });
-    if (isUser) {
-      throw unauthorized();
-    }
-
     const createdUserId = await userService.createUser(user);
 
     const { refreshToken, accessToken } = createJwt({

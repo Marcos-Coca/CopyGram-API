@@ -15,7 +15,6 @@ class PostService {
 
   async createPost(data) {
     const createdPostId = await this.DB.create(this.collection, data);
-    await this.userService.createPost(data.user, createdPostId);
     return createdPostId;
   }
 

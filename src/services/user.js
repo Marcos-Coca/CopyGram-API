@@ -12,27 +12,24 @@ class UsersService {
     return user;
   }
 
-  async getUser({ email }) {
+  async getUser({ userName }) {
     const user = await this.DB.getAll(this.collection, {
-      email,
+      userName,
     });
     return user;
   }
 
   async createUser(user) {
-    const { name, email, password } = user;
+    const { userName, password } = user;
     const hashedPassword = await encryptPassword(password);
     const createdUserId = await this.DB.create(this.collection, {
-      name,
-      email,
+      userName,
       password: hashedPassword,
+      followers: [],
+      following: [],
     });
 
     return createdUserId;
-  }
-
-  async createPost(userId, postId) {
-    await this.DB.appendValue(this.collection, userId, 'posts', postId);
   }
 }
 

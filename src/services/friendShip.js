@@ -11,20 +11,18 @@ class FriendShipService {
   }
 
   async getFollowers(userId) {
-    const follower = await this.DB.getAll(
-      this.collection,
-      { _id: new ObjectId(userId) },
-      { followers: 1 }
-    );
+    const follower = await this.DB.get(this.collection, userId, {
+      followers: 1,
+      _id: 0,
+    });
     return follower || [];
   }
 
   async getFollowing(userId) {
-    const following = await this.DB.getAll(
-      this.collection,
-      { _id: new ObjectId(userId) },
-      { following: 1 }
-    );
+    const following = await this.DB.get(this.collection, userId, {
+      following: 1,
+      _id: 0,
+    });
     return following || [];
   }
 
@@ -33,24 +31,88 @@ class FriendShipService {
       $addToSet: { followers: new ObjectId(followerId) },
     });
     await this.DB.updateDocument(this.collection, followerId, {
-      $addToSet: { following: new ObjectId(followerId) },
+      $addToSet: { following: new ObjectId(followingId) },
     });
+    return;
   }
   async unFollowUser(followerId, followingId) {
-    await this.DB.deleteValue(
-      this.collection,
-      followingId,
-      this.field,
-      new ObjectId(followerId)
-    );
+    await this.DB.updateDocument(this.collection, followingId, {
+      $pull: { followers: new ObjectId(followerId) },
+    });
+    await this.DB.updateDocument(this.collection, followerId, {
+      $pull: { following: new ObjectId(followingId) },
+    });
   }
 
   async getFollowingPosts(userId) {
-    const following = await this.getFollowing(userId);
-    const posts = await this.DB.getAll('posts', {
-      _id: { $in: following },
-    });
-    return posts;
+    const aggregation = [
+      {
+        $match: {
+          _id: userId,
+        },
+      },
+      {
+        $lookup: {
+          from: 'posts',
+          localField: 'following',
+          foreignField: 'user',
+          as: 'post',
+        },
+      },
+      {
+        $unwind: '$post',
+      },
+      {
+        $lookup: {
+          from: 'users',
+          localField: 'post.user',
+          foreignField: '_id',
+          as: 'user',
+        },
+      },
+      {
+        $unwind: '$user',
+      },
+      {
+        $project: {
+          id: '$post._id',
+          user: '$user.userName',
+          title: '$post.title',
+          contain: '$post.contain',
+        },
+      },
+    ];
+    return await this.DB.agregation(this.collection, aggregation);
+  }
+
+  async getUserPosts(userId) {
+    const aggregation = [
+      {
+        $match: {
+          _id: new ObjectId(userId),
+        },
+      },
+      {
+        $lookup: {
+          from: 'posts',
+          localField: '_id',
+          foreignField: 'user',
+          as: 'post',
+        },
+      },
+      {
+        $unwind: '$post',
+      },
+      {
+        $project: {
+          id: '$post._id',
+          title: '$post.title',
+          contain: '$post.contain',
+        },
+      },
+    ];
+
+    return await this.DB.agregation(this.collection, aggregation);
   }
 }
 
