@@ -3,6 +3,7 @@ const express = require('express');
 const FriendShipService = require('../services/friendShip');
 const validationHandler = require('../middlewares/validationHandler');
 const { userIdSchema } = require('../schemas/users');
+const UsersService = require('../services/user');
 const friendShipService = new FriendShipService();
 
 const router = express.Router();
@@ -13,7 +14,7 @@ router.get('/', async function (req, res, next) {
     const posts = await friendShipService.getFollowingPosts(user);
 
     res.status(200).json({
-      data: posts,
+      posts,
     });
   } catch (err) {
     next(err);
@@ -25,10 +26,12 @@ router.get('/:userId', async function (req, res, next) {
     const {
       params: { userId },
     } = req;
-    const userInfo = await friendShipService.getUserPosts(userId);
+    // const userService = new UsersService();
+    const posts = await friendShipService.getUserPosts(userId);
 
     res.status(200).json({
-      data: userInfo,
+      posts,
+      // userInfo,
     });
   } catch (err) {
     next(err);

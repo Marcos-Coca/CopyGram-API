@@ -103,6 +103,7 @@ class FriendShipService {
       {
         $unwind: '$post',
       },
+
       {
         $project: {
           id: '$post._id',
@@ -111,8 +112,48 @@ class FriendShipService {
         },
       },
     ];
-
     return await this.DB.agregation(this.collection, aggregation);
+  }
+
+  async likedPost(postId, userId) {
+    await this.DB.updateDocument(this.collection, postId, {
+      $addToSet: { likes: new ObjectId(userId) },
+    });
+    await this.DB.updateDocument(this.collection, userId, {
+      $addToSet: { liked: new ObjectId(postId) },
+    });
+  }
+
+  async getLikedPosts(userId) {
+    const aggregation = [
+      {
+        $match: {
+          _id: new ObjectId(userId),
+        },
+      },
+      {
+        $lookup: {
+          from: 'posts',
+          localField: 'liked',
+          foreignField: 'postId',
+          as: 'post',
+        },
+      },
+      {
+        $unwind: '$post',
+      },
+
+      {
+        $project: {
+          id: '$post._id',
+          user: '$user.userName',
+          title: '$post.title',
+          contain: '$post.contain',
+        },
+      },
+    ];
+
+    return this.DB.agregation(this.collection, aggregation);
   }
 }
 
