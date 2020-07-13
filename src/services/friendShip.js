@@ -27,21 +27,32 @@ class FriendShipService {
   }
 
   async followUser(followerId, followingId) {
-    await this.DB.updateDocument(this.collection, followingId, {
-      $addToSet: { followers: new ObjectId(followerId) },
-    });
-    await this.DB.updateDocument(this.collection, followerId, {
-      $addToSet: { following: new ObjectId(followingId) },
-    });
-    return;
+    await this.DB.appendFromArray(
+      this.collection,
+      followerId,
+      'following',
+      new ObjectId(followingId)
+    );
+    await this.DB.appendFromArray(
+      this.collection,
+      followerId,
+      'follower',
+      new ObjectId(followingId)
+    );
   }
   async unFollowUser(followerId, followingId) {
-    await this.DB.updateDocument(this.collection, followingId, {
-      $pull: { followers: new ObjectId(followerId) },
-    });
-    await this.DB.updateDocument(this.collection, followerId, {
-      $pull: { following: new ObjectId(followingId) },
-    });
+    await this.DB.deleteFromArray(
+      this.collection,
+      followerId,
+      'following',
+      new ObjectId(followingId)
+    );
+    await this.DB.deleteFromArray(
+      this.collection,
+      followerId,
+      'follower',
+      new ObjectId(followingId)
+    );
   }
 
   async getFollowingPosts(userId) {

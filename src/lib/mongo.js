@@ -60,11 +60,18 @@ class MongoLib {
     return result.upsertedId || id;
   }
 
-  async updateDocument(collection, id, action) {
+  async deleteFromArray(collection, id, field, value) {
     const db = await this.connect();
     return db
       .collection(collection)
-      .updateOne({ _id: new ObjectId(id) }, action);
+      .updateOne({ _id: new ObjectId(id) }, { $addToSet: { [field]: value } });
+  }
+
+  async appendFromArray(collection, id, field, value) {
+    const db = await this.connect();
+    return db
+      .collection(collection)
+      .updateOne({ _id: new ObjectId(id) }, { $addToSet: { [field]: value } });
   }
 
   async agregation(collection, config) {

@@ -1,5 +1,6 @@
 const MongoLib = require('../lib/mongo');
 const UsersService = require('./user');
+const moment = require('moment');
 
 class PostService {
   constructor() {
@@ -14,7 +15,10 @@ class PostService {
   }
 
   async createPost(data) {
-    const createdPostId = await this.DB.create(this.collection, data);
+    const createdPostId = await this.DB.create(this.collection, {
+      ...data,
+      date: moment().format('LLLL'),
+    });
     return createdPostId;
   }
 
