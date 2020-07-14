@@ -7,8 +7,8 @@ class UsersService {
     this.DB = new MongoLib();
   }
 
-  async findUser(userId) {
-    const user = await this.DB.get(this.collection, userId);
+  async findUser(userId, required = {}) {
+    const user = await this.DB.get(this.collection, userId, required);
     return user;
   }
 

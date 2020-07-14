@@ -4,7 +4,10 @@ const FriendShipService = require('../services/friendShip');
 const validationHandler = require('../middlewares/validationHandler');
 const { userIdSchema } = require('../schemas/users');
 const UsersService = require('../services/user');
+const FriendsUserService = require('../services/friendsUser');
 const friendShipService = new FriendShipService();
+
+const friendsUser = new FriendsUserService();
 
 const router = express.Router();
 
@@ -12,7 +15,6 @@ router.get('/', async function (req, res, next) {
   try {
     const { user } = req;
     const posts = await friendShipService.getFollowingPosts(user);
-
     res.status(200).json({
       posts,
     });
@@ -26,9 +28,10 @@ router.get('/:userId', async function (req, res, next) {
     const {
       params: { userId },
     } = req;
-    // const userService = new UsersService();
+    const userService = new UsersService();
+    const user = await friendsUser.getUserProfile(userId);
     const posts = await friendShipService.getUserPosts(userId);
-
+    console.log(user);
     res.status(200).json({
       posts,
       // userInfo,

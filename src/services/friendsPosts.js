@@ -7,7 +7,7 @@ const {
   getLikedPosts,
 } = require('../lib/queries/friendsPosts');
 
-class FriendPosts {
+class FriendPostService {
   constructor() {
     this.DB = new MongoLib();
     this.collection = 'users';
@@ -27,9 +27,9 @@ class FriendPosts {
     return this.DB.agregation(this.collection, aggregation);
   }
 
-  async likedPost(postId, userId) {
+  async likePost(postId, userId) {
     await this.DB.appendFromArray(
-      this.collection,
+      'posts',
       postId,
       'likes',
       new ObjectId(userId)
@@ -43,4 +43,4 @@ class FriendPosts {
   }
 }
 
-module.exports = FriendPosts;
+module.exports = FriendPostService;

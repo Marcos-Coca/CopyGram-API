@@ -21,6 +21,7 @@ const getUserPosts = (userId) => [
       id: '$post._id',
       title: '$post.title',
       contain: '$post.contain',
+      date: '$post.date',
       likes: {
         $cond: {
           if: { $isArray: '$post.likes' },
@@ -66,6 +67,14 @@ const getFollowingPosts = (userId) => [
       user: '$user.userName',
       title: '$post.title',
       contain: '$post.contain',
+      date: '$post.date',
+      likes: {
+        $cond: {
+          if: { $isArray: '$post.likes' },
+          then: { $size: '$post.likes' },
+          else: 0,
+        },
+      },
     },
   },
 ];
@@ -94,6 +103,14 @@ const getLikedPosts = (userId) => [
       user: '$user.userName',
       title: '$post.title',
       contain: '$post.contain',
+      date: '$post.date',
+      likes: {
+        $cond: {
+          if: { $isArray: '$post.likes' },
+          then: { $size: '$post.likes' },
+          else: 0,
+        },
+      },
     },
   },
 ];

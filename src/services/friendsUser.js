@@ -1,13 +1,24 @@
 const MongoLib = require('../lib/mongo');
-const UserService = require('./user');
 const { ObjectId } = require('mongodb');
+const UsersService = require('./user');
 
-class FollowerService {
+class FriendsUserService {
   constructor() {
     this.DB = new MongoLib();
     this.collection = 'users';
-    this.field = 'followwing';
-    this.userService = new UserService();
+  }
+
+  async getUserProfile(userId) {
+    const userService = new UsersService();
+    const userInfo = userService.findUser(userId, {
+      password: 0,
+      $projection: {
+        // followers: '$size',
+        following: { $size: 'followings' },
+      },
+    });
+
+    return userInfo;
   }
 
   async getFollowers(userId) {
@@ -56,4 +67,4 @@ class FollowerService {
   }
 }
 
-module.exports = FollowerService;
+module.exports = FriendsUserService;
