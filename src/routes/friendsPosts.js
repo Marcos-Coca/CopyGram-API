@@ -1,8 +1,15 @@
 const router = require('express').Router();
 
-router.get('/', async function () {
-  try {
-  } catch (err) {
-    next(err);
-  }
-});
+const validationHandler = require('../middlewares/validationHandler');
+const { postIdSchema } = require('../schemas/posts');
+const {
+  likePost,
+  getLikedPosts,
+  getFollowingPosts,
+} = require('../controllers/friendsPostsController');
+
+router.get('/', getFollowingPosts);
+router.get('/like', getLikedPosts);
+router.post('/like/:postId', validationHandler(postIdSchema), likePost);
+
+module.exports = router;

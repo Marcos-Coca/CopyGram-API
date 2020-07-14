@@ -74,7 +74,7 @@ class MongoLib {
       .updateOne({ _id: new ObjectId(id) }, { $addToSet: { [field]: value } });
   }
 
-  async agregation(collection, config) {
+  async aggregation(collection, config) {
     const db = await this.connect();
     return await db.collection(collection).aggregate(config).toArray();
   }

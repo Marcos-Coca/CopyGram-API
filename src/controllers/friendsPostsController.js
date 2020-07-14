@@ -12,6 +12,7 @@ async function getFollowingPosts(req, res, next) {
     next(err);
   }
 }
+
 async function likePost(req, res, next) {
   try {
     const {
@@ -20,6 +21,19 @@ async function likePost(req, res, next) {
     } = req;
 
     await friendsPosts.likePost(postId, user);
+    res.sendStatus(204);
+  } catch (err) {
+    next(err);
+  }
+}
+
+async function getLikedPosts(req, res, next) {
+  try {
+    const { user } = req;
+    const posts = await friendsPosts.getLikedPosts(user);
+    res.send(200).json({
+      posts,
+    });
   } catch (err) {
     next(err);
   }
@@ -28,4 +42,5 @@ async function likePost(req, res, next) {
 module.exports = {
   getFollowingPosts,
   likePost,
+  getLikedPosts,
 };

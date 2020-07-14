@@ -13,18 +13,18 @@ class FriendPostService {
     this.collection = 'users';
   }
   async getFollowingPosts(userId) {
-    const aggregation = getFollowingPosts(userId);
-    return await this.DB.agregation(this.collection, aggregation);
+    const query = getFollowingPosts(userId);
+    return await this.DB.aggregation(this.collection, query);
   }
 
   async getUserPosts(userId) {
-    const aggregation = getUserPosts(new ObjectId(userId));
-    return await this.DB.agregation(this.collection, aggregation);
+    const query = getUserPosts(new ObjectId(userId));
+    return await this.DB.aggregation(this.collection, query);
   }
 
   async getLikedPosts(userId) {
-    const aggregation = getLikedPosts(userId);
-    return this.DB.agregation(this.collection, aggregation);
+    const query = getLikedPosts(userId);
+    return this.DB.aggregation(this.collection, query);
   }
 
   async likePost(postId, userId) {

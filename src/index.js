@@ -21,8 +21,9 @@ app.get('/', (req, res) => {
 });
 
 //routes
-app.use('/api/posts', cookieAuth, require('./routes/posts'));
 app.use('/api/auth', require('./routes/auth'));
+app.use('/api/posts', cookieAuth, require('./routes/posts'));
+app.use('/api/friendsPosts', cookieAuth, require('./routes/friendsPosts'));
 app.use('/api/friendship', cookieAuth, require('./routes/friendShip'));
 
 //Error middlewares

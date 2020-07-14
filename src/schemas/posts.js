@@ -1,6 +1,8 @@
 const joi = require('@hapi/joi');
 
-const postIdSchema = joi.string().regex(/^[0-9a-fA-F]{24}$/);
+const postIdSchema = joi.object({
+  postId: joi.string().regex(/^[0-9a-fA-F]{24}$/),
+});
 
 const postTitleSchema = joi.string().max(20);
 const postContainSchema = joi.string().min(5).max(144);

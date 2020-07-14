@@ -1,6 +1,5 @@
 const router = require('express').Router();
 
-const friendsUserController = require('../controllers/friendsUserController');
 const {
   followUser,
   unFollowUser,

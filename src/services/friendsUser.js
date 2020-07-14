@@ -51,6 +51,7 @@ class FriendsUserService {
       new ObjectId(followingId)
     );
   }
+
   async unFollowUser(followerId, followingId) {
     await this.DB.deleteFromArray(
       this.collection,
