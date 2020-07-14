@@ -1,4 +1,4 @@
-const getUserPosts = (userId) => [
+const getUserPosts = (userId, page) => [
   {
     $match: {
       _id: userId,
@@ -31,9 +31,18 @@ const getUserPosts = (userId) => [
       },
     },
   },
+  {
+    $sort: { date: -1 },
+  },
+  {
+    $skip: page * 10,
+  },
+  {
+    $limit: 10,
+  },
 ];
 
-const getFollowingPosts = (userId) => [
+const getFollowingPosts = (userId, page) => [
   {
     $match: {
       _id: userId,
@@ -77,9 +86,18 @@ const getFollowingPosts = (userId) => [
       },
     },
   },
+  {
+    $sort: { date: -1 },
+  },
+  {
+    $skip: page * 10,
+  },
+  {
+    $limit: 10,
+  },
 ];
 
-const getLikedPosts = (userId) => [
+const getLikedPosts = (userId, page) => [
   {
     $match: {
       _id: userId,
@@ -89,7 +107,7 @@ const getLikedPosts = (userId) => [
     $lookup: {
       from: 'posts',
       localField: 'liked',
-      foreignField: 'postId',
+      foreignField: '_id',
       as: 'post',
     },
   },
@@ -112,6 +130,15 @@ const getLikedPosts = (userId) => [
         },
       },
     },
+  },
+  {
+    $sort: { date: -1 },
+  },
+  {
+    $skip: page * 10,
+  },
+  {
+    $limit: 10,
   },
 ];
 

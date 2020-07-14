@@ -17,7 +17,8 @@ class PostService {
   async createPost(data) {
     const createdPostId = await this.DB.create(this.collection, {
       ...data,
-      date: moment().format('LLLL'),
+      date: new Date(),
+      // date: moment().format('YYYY-mm-dd HH:MM:ss'),
     });
     return createdPostId;
   }

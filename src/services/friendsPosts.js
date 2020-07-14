@@ -12,8 +12,8 @@ class FriendPostService {
     this.DB = new MongoLib();
     this.collection = 'users';
   }
-  async getFollowingPosts(userId) {
-    const query = getFollowingPosts(userId);
+  async getFollowingPosts(userId, page) {
+    const query = getFollowingPosts(userId, page);
     return await this.DB.aggregation(this.collection, query);
   }
 
@@ -22,8 +22,8 @@ class FriendPostService {
     return await this.DB.aggregation(this.collection, query);
   }
 
-  async getLikedPosts(userId) {
-    const query = getLikedPosts(userId);
+  async getLikedPosts(userId, page) {
+    const query = getLikedPosts(userId, page);
     return this.DB.aggregation(this.collection, query);
   }
 

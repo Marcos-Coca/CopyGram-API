@@ -3,8 +3,11 @@ const friendsPosts = new FriendPostService();
 
 async function getFollowingPosts(req, res, next) {
   try {
-    const { user } = req;
-    const posts = await friendsPosts.getFollowingPosts(user);
+    const {
+      user,
+      query: { page },
+    } = req;
+    const posts = await friendsPosts.getFollowingPosts(user, page);
     res.status(200).json({
       posts,
     });
@@ -29,9 +32,12 @@ async function likePost(req, res, next) {
 
 async function getLikedPosts(req, res, next) {
   try {
-    const { user } = req;
-    const posts = await friendsPosts.getLikedPosts(user);
-    res.send(200).json({
+    const {
+      user,
+      query: { page },
+    } = req;
+    const posts = await friendsPosts.getLikedPosts(user, page);
+    res.status(200).json({
       posts,
     });
   } catch (err) {

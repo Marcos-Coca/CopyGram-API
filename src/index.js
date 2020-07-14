@@ -8,8 +8,6 @@ const {
 } = require('./middlewares/errorHandler');
 const cookieParser = require('cookie-parser');
 const cookieAuth = require('./middlewares/cookieAuth');
-const validationHandler = require('./middlewares/validationHandler');
-const { userIdSchema } = require('./schemas/users');
 
 const app = express();
 
