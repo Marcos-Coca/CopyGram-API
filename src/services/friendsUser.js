@@ -62,7 +62,7 @@ class FriendsUserService {
     );
   }
 
-  async searchUsers(text) {
+  async searchUsers(text, page) {
     return this.DB.textSearch(this.collection, text, { userName: 1 }, 10, page);
   }
 }
