@@ -20,10 +20,10 @@ class UsersService {
   }
 
   async createUser(user) {
-    const { userName, password } = user;
+    const { password } = user;
     const hashedPassword = await encryptPassword(password);
     const createdUserId = await this.DB.create(this.collection, {
-      userName,
+      ...user,
       password: hashedPassword,
       followers: [],
       following: [],
