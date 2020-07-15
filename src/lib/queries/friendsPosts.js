@@ -23,11 +23,7 @@ const getUserPosts = (userId, page) => [
       contain: '$post.contain',
       date: '$post.date',
       likes: {
-        $cond: {
-          if: { $isArray: '$post.likes' },
-          then: { $size: '$post.likes' },
-          else: 0,
-        },
+        $size: '$post.likes',
       },
     },
   },
@@ -78,11 +74,7 @@ const getFollowingPosts = (userId, page) => [
       contain: '$post.contain',
       date: '$post.date',
       likes: {
-        $cond: {
-          if: { $isArray: '$post.likes' },
-          then: { $size: '$post.likes' },
-          else: 0,
-        },
+        $size: '$post.likes',
       },
     },
   },
@@ -123,11 +115,7 @@ const getLikedPosts = (userId, page) => [
       contain: '$post.contain',
       date: '$post.date',
       likes: {
-        $cond: {
-          if: { $isArray: '$post.likes' },
-          then: { $size: '$post.likes' },
-          else: 0,
-        },
+        $size: '$post.likes',
       },
     },
   },

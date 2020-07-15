@@ -6,9 +6,11 @@ const {
   likePost,
   getLikedPosts,
   getFollowingPosts,
+  getUserPosts,
 } = require('../controllers/friendsPostsController');
 
 router.get('/', getFollowingPosts);
+router.get('/:userId', getUserPosts);
 router.get('/like', getLikedPosts);
 router.post('/like/:postId', validationHandler(postIdSchema), likePost);
 

@@ -36,7 +36,6 @@ async function updatePost(req, res, next) {
   try {
     const {
       body: post,
-      user,
       params: { postId },
     } = req;
     const updatedPost = await postService.updatePost(postId, post);
@@ -54,7 +53,6 @@ async function deletePost(req, res, next) {
   try {
     const {
       params: { postId },
-      user,
     } = req;
 
     const deletedPost = await postService.deletePost(postId);

@@ -1,6 +1,6 @@
 const MongoLib = require('../lib/mongo');
 const { ObjectId } = require('mongodb');
-const UsersService = require('./user');
+const { getUserProfile } = require('../lib/queries/friendsUser');
 
 class FriendsUserService {
   constructor() {
@@ -9,16 +9,11 @@ class FriendsUserService {
   }
 
   async getUserProfile(userId) {
-    const userService = new UsersService();
-    const userInfo = userService.findUser(userId, {
-      password: 0,
-      $projection: {
-        // followers: '$size',
-        following: { $size: 'followings' },
-      },
-    });
-
-    return userInfo;
+    const user = new ObjectId(userId);
+    const query = getUserProfile(user);
+    const posts = await this.DB.countDocuments('posts', { user });
+    const [userInfo] = await this.DB.aggregation(this.collection, query);
+    return { ...userInfo, posts };
   }
 
   async getFollowers(userId) {
@@ -65,6 +60,10 @@ class FriendsUserService {
       'follower',
       new ObjectId(followingId)
     );
+  }
+
+  async searchUsers(text) {
+    return this.DB.textSearch(this.collection, text, { userName: 1 }, 10, page);
   }
 }
 

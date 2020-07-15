@@ -38,12 +38,22 @@ class MongoLib {
     const db = await this.connect();
     return db
       .collection(collection)
-      .findOne({ _id: new ObjectId(id) }, { projection: { ...projection } });
+      .findOne({ _id: new ObjectId(id) }, { projection });
   }
 
   async getAll(collection, query = {}, required = {}) {
     const db = await this.connect();
     return db.collection(collection).find(query).project(required).toArray();
+  }
+
+  async textSearch(collection, text, projection = {}, limit, page) {
+    const db = await this.connect();
+    return db
+      .collection(collection)
+      .find({ userName: { $regex: `.*${text}.*` } }, { projection })
+      .skip(page * 10)
+      .limit(limit)
+      .toArray();
   }
 
   async create(collection, data) {
@@ -83,6 +93,11 @@ class MongoLib {
     const db = await this.connect();
     await db.collection(collection).deleteOne({ _id: new ObjectId(id) });
     return id;
+  }
+
+  async countDocuments(collection, query) {
+    const db = await this.connect();
+    return db.collection(collection).estimatedDocumentCount(query);
   }
 }
 

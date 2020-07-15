@@ -63,4 +63,41 @@ async function getFollowing(req, res, next) {
   }
 }
 
-module.exports = { followUser, unFollowUser, getFollowers, getFollowing };
+async function getUserProfile(req, res, next) {
+  try {
+    const {
+      params: { userId },
+    } = req;
+
+    const userInfo = await friendsUser.getUserProfile(userId);
+
+    res.status(200).json({
+      userInfo,
+    });
+  } catch (err) {
+    next(err);
+  }
+}
+
+async function searchUser(req, res, next) {
+  try {
+    const { userName = '', page = 0 } = req.query;
+
+    const users = await friendsUser.searchUsers(userName, page);
+
+    res.status(200).json({
+      users,
+    });
+  } catch (err) {
+    next(err);
+  }
+}
+
+module.exports = {
+  followUser,
+  unFollowUser,
+  getFollowers,
+  getFollowing,
+  getUserProfile,
+  searchUser,
+};

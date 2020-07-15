@@ -5,7 +5,7 @@ async function getFollowingPosts(req, res, next) {
   try {
     const {
       user,
-      query: { page },
+      query: { page = 0 },
     } = req;
     const posts = await friendsPosts.getFollowingPosts(user, page);
     res.status(200).json({
@@ -34,9 +34,25 @@ async function getLikedPosts(req, res, next) {
   try {
     const {
       user,
-      query: { page },
+      query: { page = 0 },
     } = req;
     const posts = await friendsPosts.getLikedPosts(user, page);
+    res.status(200).json({
+      posts,
+    });
+  } catch (err) {
+    next(err);
+  }
+}
+
+async function getUserPosts(req, res, next) {
+  try {
+    const {
+      params: { userId },
+      query: { page = 0 },
+    } = req;
+
+    const posts = await friendsPosts.getUserPosts(userId, page);
     res.status(200).json({
       posts,
     });
@@ -49,4 +65,5 @@ module.exports = {
   getFollowingPosts,
   likePost,
   getLikedPosts,
+  getUserPosts,
 };

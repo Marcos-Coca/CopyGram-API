@@ -17,8 +17,8 @@ class FriendPostService {
     return await this.DB.aggregation(this.collection, query);
   }
 
-  async getUserPosts(userId) {
-    const query = getUserPosts(new ObjectId(userId));
+  async getUserPosts(userId, page) {
+    const query = getUserPosts(new ObjectId(userId), page);
     return await this.DB.aggregation(this.collection, query);
   }
 

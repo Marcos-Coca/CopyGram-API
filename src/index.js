@@ -22,8 +22,7 @@ app.get('/', (req, res) => {
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/posts', cookieAuth, require('./routes/posts'));
 app.use('/api/friendsPosts', cookieAuth, require('./routes/friendsPosts'));
-app.use('/api/friendship', cookieAuth, require('./routes/friendShip'));
-
+app.use('/api/friendsUsers', cookieAuth, require('./routes/friendsUser'));
 //Error middlewares
 app.use(logErrors);
 app.use(wrapErrors);
