@@ -18,9 +18,9 @@ const getUserPosts = (userId, page) => [
 
   {
     $project: {
-      id: '$post._id',
-      title: '$post.title',
-      contain: '$post.contain',
+      _id: '$post._id',
+      description: '$post.description',
+      image: '$post.image',
       date: '$post.date',
       likes: {
         $size: '$post.likes',
@@ -68,10 +68,12 @@ const getFollowingPosts = (userId, page) => [
   },
   {
     $project: {
-      id: '$post._id',
+      _id: '$post._id',
       user: '$user.userName',
-      title: '$post.title',
-      contain: '$post.contain',
+      userId: '$user._id',
+      userImage: '$user.profileImage',
+      image: '$post.image',
+      description: '$post.description',
       date: '$post.date',
       likes: {
         $size: '$post.likes',
@@ -109,10 +111,12 @@ const getLikedPosts = (userId, page) => [
 
   {
     $project: {
-      id: '$post._id',
+      _id: '$post._id',
       user: '$user.userName',
-      title: '$post.title',
-      contain: '$post.contain',
+      userId: '$user._id',
+      userImage: '$user.profileImage',
+      image: '$post.image',
+      description: '$post.description',
       date: '$post.date',
       likes: {
         $size: '$post.likes',

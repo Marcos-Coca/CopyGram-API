@@ -1,6 +1,9 @@
 const MongoLib = require('../lib/mongo');
 const { ObjectId } = require('mongodb');
-const { getUserProfile } = require('../lib/queries/friendsUser');
+const {
+  getUserProfile,
+  followersOrFollowing,
+} = require('../lib/queries/friendsUser');
 
 class FriendsUserService {
   constructor() {
@@ -17,18 +20,18 @@ class FriendsUserService {
   }
 
   async getFollowers(userId) {
-    const follower = await this.DB.get(this.collection, userId, {
-      followers: 1,
-      _id: 0,
-    });
+    const follower = await this.DB.aggregation(
+      this.collection,
+      followersOrFollowing(new ObjectId(userId), 'followers')
+    );
     return follower || [];
   }
 
   async getFollowing(userId) {
-    const following = await this.DB.get(this.collection, userId, {
-      following: 1,
-      _id: 0,
-    });
+    const following = await this.DB.aggregation(
+      this.collection,
+      followersOrFollowing(new ObjectId(userId), 'following')
+    );
     return following || [];
   }
 
@@ -41,9 +44,9 @@ class FriendsUserService {
     );
     await this.DB.appendFromArray(
       this.collection,
-      followerId,
-      'follower',
-      new ObjectId(followingId)
+      new ObjectId(followingId),
+      'followers',
+      new ObjectId(followerId)
     );
   }
 
@@ -56,14 +59,20 @@ class FriendsUserService {
     );
     await this.DB.deleteFromArray(
       this.collection,
-      followerId,
-      'follower',
-      new ObjectId(followingId)
+      new ObjectId(followingId),
+      'followers',
+      followerId
     );
   }
 
   async searchUsers(text, page) {
-    return this.DB.textSearch(this.collection, text, { userName: 1 }, 10, page);
+    return this.DB.textSearch(
+      this.collection,
+      text,
+      { userName: 1, image: 1 },
+      10,
+      page
+    );
   }
 }
 

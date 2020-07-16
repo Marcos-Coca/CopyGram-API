@@ -11,4 +11,7 @@ module.exports = {
   db_cluster: process.env.DB_CLUSTER,
   access_secret: process.env.ACCESS_JWT_SECRET,
   refresh_secret: process.env.REFRESH_JWT_SECRET,
+  cloudinary_name: process.env.CLOUDINARY_NAME,
+  cloudinary_api_key: process.env.CLOUDINARY_API_KEY,
+  cloudinary_api_secret: process.env.CLOUDINARY_API_SECRET,
 };

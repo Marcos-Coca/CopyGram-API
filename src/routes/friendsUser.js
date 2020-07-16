@@ -11,9 +11,9 @@ const {
   searchUser,
 } = require('../controllers/friendsUserController');
 
-router.get('/:userId', validationHandler(userIdSchema), getUserProfile);
-
 router.post('/search/', searchUser);
+
+router.get('/:userId', validationHandler(userIdSchema), getUserProfile);
 
 router.post('/:userId/follow', validationHandler(userIdSchema), followUser);
 

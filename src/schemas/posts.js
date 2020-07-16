@@ -4,17 +4,18 @@ const postIdSchema = joi.object({
   postId: joi.string().regex(/^[0-9a-fA-F]{24}$/),
 });
 
-const postTitleSchema = joi.string().max(20);
-const postContainSchema = joi.string().min(5).max(144);
+const postImageSchema = joi.object({
+  image: joi.required(),
+});
+
+const postDescriptionSchema = joi.string().min(5).max(144);
 
 const createPostSchema = joi.object({
-  title: postTitleSchema.required(),
-  contain: postContainSchema.required(),
+  description: postDescriptionSchema.required(),
 });
 
 const updatePostSchema = joi.object({
-  title: postTitleSchema,
-  contain: postContainSchema,
+  description: postDescriptionSchema,
 });
 
 module.exports = {

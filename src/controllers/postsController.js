@@ -1,12 +1,18 @@
 const PostService = require('../services/posts');
+const uploadImage = require('../utils/cloudinary');
 
 const postService = new PostService();
 
 async function createPost(req, res, next) {
   try {
-    const { body: post, user } = req;
+    const { body: post, user, file } = req;
 
-    const createdPostId = await postService.createPost({ ...post, user });
+    const { url, public_id } = await uploadImage(file.path);
+    const createdPostId = await postService.createPost({
+      ...post,
+      user,
+      image: { url, public_id },
+    });
 
     res.status(201).json({
       data: createdPostId,

@@ -74,7 +74,7 @@ class MongoLib {
     const db = await this.connect();
     return db
       .collection(collection)
-      .updateOne({ _id: new ObjectId(id) }, { $addToSet: { [field]: value } });
+      .updateOne({ _id: new ObjectId(id) }, { $pull: { [field]: value } });
   }
 
   async appendFromArray(collection, id, field, value) {

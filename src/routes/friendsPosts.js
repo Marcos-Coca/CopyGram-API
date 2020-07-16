@@ -10,8 +10,8 @@ const {
 } = require('../controllers/friendsPostsController');
 
 router.get('/', getFollowingPosts);
-router.get('/:userId', getUserPosts);
 router.get('/like', getLikedPosts);
+router.get('/:userId', getUserPosts);
 router.post('/like/:postId', validationHandler(postIdSchema), likePost);
 
 module.exports = router;

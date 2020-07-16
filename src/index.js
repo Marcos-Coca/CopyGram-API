@@ -1,5 +1,7 @@
 const express = require('express');
 const cors = require('cors');
+const multer = require('multer');
+
 const { port } = require('./config/index');
 
 const {
@@ -10,6 +12,7 @@ const {
 const notFound = require('./middlewares/notFound');
 const cookieParser = require('cookie-parser');
 const cookieAuth = require('./middlewares/cookieAuth');
+const multerConfigObject = require('./middlewares/multerConfig');
 
 const app = express();
 
@@ -20,7 +23,9 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
+app.use(multer(multerConfigObject).single('image'));
 
 //routes
 app.use('/api/auth', require('./routes/auth'));

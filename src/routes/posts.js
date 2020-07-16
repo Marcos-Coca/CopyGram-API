@@ -1,6 +1,5 @@
 const express = require('express');
 const validationHandler = require('../middlewares/validationHandler');
-
 const {
   createPostSchema,
   postIdSchema,
