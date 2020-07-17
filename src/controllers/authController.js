@@ -20,7 +20,7 @@ async function signUp(req, res, next) {
 
     sendCookies(res, { refreshToken, accessToken });
 
-    return res.status(201).json({ id: createdUserId });
+    return res.status(200).json({ id: createdUserId });
   } catch (err) {
     next(err);
   }
@@ -37,7 +37,7 @@ async function signIn(req, res, next) {
 
       sendCookies(res, { refreshToken, accessToken });
 
-      return res.status(201).json({ id: user._id });
+      return res.status(200).json({ id: user._id });
     } catch (err) {
       next(err);
     }

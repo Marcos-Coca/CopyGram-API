@@ -1,5 +1,4 @@
 const FriendPostService = require('../services/friendsPosts');
-const { query } = require('express');
 const friendsPosts = new FriendPostService();
 
 async function getFollowingPosts(req, res, next) {

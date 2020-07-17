@@ -107,3 +107,6 @@ dist
 #Private
 
 mongoSchema/
+
+.png
+.jpg
