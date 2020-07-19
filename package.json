@@ -4,8 +4,9 @@
   "description": "A Simple Copy of Instagram",
   "main": "src/index.js",
   "scripts": {
-    "dev": "nodemon",
-    "start": "node",
+    "dev": "nodemon src/index.ts",
+    "build": "tsc",
+    "start": "npm run build && node dist/index.js",
     "test": "jest"
   },
   "author": "marcos-coca",
@@ -30,13 +31,27 @@
     "uuid": "^8.2.0"
   },
   "devDependencies": {
+    "@types/bcrypt": "^3.0.0",
+    "@types/cors": "^2.8.6",
+    "@types/express": "^4.17.7",
+    "@types/hapi__joi": "^17.1.4",
     "@types/jest": "^26.0.4",
+    "@types/jsonwebtoken": "^8.5.0",
+    "@types/mongodb": "^3.5.25",
+    "@types/multer": "^1.4.3",
+    "@types/node": "^14.0.23",
+    "@types/passport": "^1.0.4",
+    "@types/passport-http": "^0.3.8",
+    "@types/passport-jwt": "^3.0.3",
+    "@types/uuid": "^8.0.0",
     "eslint": "^7.3.1",
     "eslint-config-prettier": "^6.11.0",
     "eslint-plugin-prettier": "^3.1.4",
     "jest": "^26.1.0",
     "nodemon": "^2.0.4",
     "prettier": "^2.0.5",
-    "supertest": "^4.0.2"
+    "supertest": "^4.0.2",
+    "ts-node": "^8.10.2",
+    "typescript": "^3.9.7"
   }
 }
