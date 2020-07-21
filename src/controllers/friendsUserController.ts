@@ -1,10 +1,10 @@
 import { FriendsUserService } from '../services/friendsUser';
 import { NextFunction, Response, Request } from 'express';
 
-async function followUser(req: Request | any, res: Response, next: NextFunction) {
+async function followUser(req: Request, res: Response, next: NextFunction) {
   try {
     const { userId } = req.params;
-    const { id } = req.payload;
+    const { id } = (req as any).payload;
 
     const friendsUser = new FriendsUserService(id);
     await friendsUser.followUser(userId);
@@ -15,10 +15,10 @@ async function followUser(req: Request | any, res: Response, next: NextFunction)
   }
 }
 
-async function unFollowUser(req: Request | any, res: Response, next: NextFunction) {
+async function unFollowUser(req: Request, res: Response, next: NextFunction) {
   try {
     const { userId } = req.params;
-    const { id } = req.payload;
+    const { id } = (req as any).payload;
 
     const friendsUser = new FriendsUserService(id);
     await friendsUser.unFollowUser(userId);
@@ -71,13 +71,13 @@ async function getUserProfile(req: Request, res: Response, next: NextFunction) {
   }
 }
 
-async function searchUser(req: Request | any, res: Response, next: NextFunction) {
+async function searchUser(req: Request, res: Response, next: NextFunction) {
   try {
     const { userName, page = 0 } = req.query;
-    const { id } = req.payload;
+    const { id } = (req as any).payload;
 
     const friendsUser = new FriendsUserService(id);
-    const users = await friendsUser.searchUsers(userName, Number(page));
+    const users = await friendsUser.searchUsers(userName as string, Number(page));
 
     res.status(200).json({
       users,

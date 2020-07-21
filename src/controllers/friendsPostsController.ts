@@ -1,10 +1,10 @@
 import { Request, Response, NextFunction } from 'express';
 import { FriendPostService } from '../services/friendsPosts';
 
-async function getFollowingPosts(req: Request | any, res: Response, next: NextFunction) {
+async function getFollowingPosts(req: Request, res: Response, next: NextFunction) {
   try {
     const { page } = req.query;
-    const { id } = req.payload;
+    const { id } = (req as any).payload;
     const friendsPosts = new FriendPostService(id);
     const posts = await friendsPosts.getFollowingPosts(Number(page));
     return res.status(200).json({
@@ -15,10 +15,10 @@ async function getFollowingPosts(req: Request | any, res: Response, next: NextFu
   }
 }
 
-async function likePost(req: Request | any, res: Response, next: NextFunction) {
+async function likePost(req: Request, res: Response, next: NextFunction) {
   try {
     const { postId } = req.params;
-    const { id } = req.payload;
+    const { id } = (req as any).payload;
 
     const friendsPosts = new FriendPostService(id);
     await friendsPosts.likePost(postId);
@@ -28,10 +28,10 @@ async function likePost(req: Request | any, res: Response, next: NextFunction) {
   }
 }
 
-async function getLikedPosts(req: Request | any, res: Response, next: NextFunction) {
+async function getLikedPosts(req: Request, res: Response, next: NextFunction) {
   try {
     const { page = 0 } = req.query;
-    const { id } = req.payload;
+    const { id } = (req as any).payload;
     const friendsPosts = new FriendPostService(id);
     const posts = await friendsPosts.getLikedPosts(Number(page));
     return res.status(200).json({

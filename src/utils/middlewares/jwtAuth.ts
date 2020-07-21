@@ -4,12 +4,12 @@ import { Request, Response, NextFunction } from 'express';
 import { token } from '../typescript/jwtTypes';
 import { unauthorized } from '@hapi/boom';
 
-export async function authenticateToken(req: any, res: Response, next: NextFunction) {
+export async function authenticateToken(req: Request, res: Response, next: NextFunction) {
   try {
     const authHeaders = req.headers['authorization'] || '';
     const accessToken: token = authHeaders.split(' ')[1];
     const payload = verify(accessToken, config.access_secret as string);
-    req.payload = payload;
+    (req as any).payload = payload;
     return next();
   } catch (err) {
     return next(unauthorized(err));
