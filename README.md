@@ -1,6 +1,6 @@
 # CopyGram-API
 
-Follow sistem API
+Api con authenticación mediante access y refreshToken que te permite crear posts, seguir otros usurios y ver los posts que estos crean al estilo de instagram pero fake.
 
 # ¿Cómo Funciona?
 
