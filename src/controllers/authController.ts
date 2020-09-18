@@ -1,4 +1,4 @@
-import { UsersService } from '../services/user';
+import { UsersService } from '../services/users';
 import passport from 'passport';
 import { unauthorized } from '@hapi/boom';
 import { JsonWebToken } from '../utils/jwt';
@@ -14,6 +14,10 @@ async function signUp(req: Request, res: Response, next: NextFunction): Promise<
 
   try {
     const userService = new UsersService();
+    const existUser = (await userService.getUser({ userName: user.userName })) || [];
+
+    if (existUser.length) return next(unauthorized('User Already Exist'));
+
     const createdUserId = await userService.createUser(user);
     const tokens = JsonWebToken.createJwtTokens(createdUserId);
     JsonWebToken.sendTokens(res, tokens);
@@ -27,7 +31,7 @@ function signIn(req: Request, res: Response, next: NextFunction): Promise<Respon
   return passport.authenticate('basic', async function (err, user) {
     try {
       if (err || !user) {
-        next(unauthorized());
+        return next(unauthorized('Invalid User or Password'));
       }
 
       const tokens = JsonWebToken.createJwtTokens(user._id);
@@ -41,8 +45,8 @@ function signIn(req: Request, res: Response, next: NextFunction): Promise<Respon
 
 function refreshTokens(req: Request, res: Response, next: NextFunction) {
   try {
-    const { refreshtoken } = req.cookies;
-    const payload = verify(refreshtoken, config.refresh_secret as string) as Token;
+    const { refreshToken } = req.cookies;
+    const payload = verify(refreshToken, config.refresh_secret as string) as Token;
 
     const userService = new UsersService();
     const user = userService.findUser(payload.id, { _id: 1 });

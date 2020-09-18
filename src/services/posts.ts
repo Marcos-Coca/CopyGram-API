@@ -33,5 +33,3 @@ export class PostService {
     return deletedPost;
   }
 }
-
-module.exports = PostService;

@@ -11,7 +11,7 @@ import { multerConfigObject } from './utils/middlewares/multerConfig';
 const app = express();
 
 const corsOptions = {
-  origin: 'http://localhost:3001',
+  origin: 'http://localhost:4000',
   credentials: true,
 };
 
@@ -23,6 +23,7 @@ app.use(multer(multerConfigObject).single('image'));
 
 //routes
 app.use('/api/auth', require('./routes/auth'));
+app.use('api/users', authenticateToken, require('./routes/users'));
 app.use('/api/posts', authenticateToken, require('./routes/posts'));
 app.use('/api/friendsPosts', authenticateToken, require('./routes/friendsPosts'));
 app.use('/api/friendsUsers', authenticateToken, require('./routes/friendsUser'));

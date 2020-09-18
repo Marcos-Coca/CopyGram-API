@@ -17,6 +17,7 @@ export class MongoLib {
       useUnifiedTopology: true,
     });
     this.dbName = db_name as string;
+    this.connection = false;
   }
 
   private connect() {

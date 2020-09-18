@@ -8,8 +8,8 @@ cloudinary.config({
   api_secret: config.cloudinary_api_secret,
 });
 
-export async function uploadImage(imgPath: string) {
-  const imgInfo = await cloudinary.uploader.upload(imgPath);
-  fs.unlinkSync(imgPath);
+export async function uploadImage(path: string) {
+  const imgInfo = await cloudinary.uploader.upload(path);
+  fs.unlinkSync(path);
   return imgInfo;
 }

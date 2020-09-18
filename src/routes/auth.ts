@@ -9,6 +9,6 @@ router.post('/sign-in', signIn);
 
 router.post('/sign-up', validationHandler(userSchema), signUp);
 
-router.post('/refresh_tokens', refreshTokens);
+router.get('/refresh_tokens', refreshTokens);
 
 module.exports = router;

@@ -4,8 +4,7 @@ import { createPostSchema, postIdSchema, updatePostSchema } from '../utils/schem
 import { createPost, getPost, updatePost, deletePost } from '../controllers/postsController';
 
 const router = Router();
-
-router.post('/create', validationHandler(createPostSchema), createPost);
+router.post('/', validationHandler(createPostSchema), createPost);
 
 router.get('/:postId', validationHandler(postIdSchema, 'params'), getPost);
 

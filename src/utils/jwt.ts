@@ -14,10 +14,6 @@ export class JsonWebToken {
   }
 
   static sendTokens(res: Response, tokens: Tokens) {
-    res.cookie('refreshtoken', tokens.refreshToken, {
-      httpOnly: !config.env,
-      secure: !config.env,
-    });
-    res.json({ token: tokens.accessToken });
+    res.json({ refreshToken: tokens.refreshToken, accessToken: tokens.accessToken });
   }
 }
